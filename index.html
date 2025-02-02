@@ -914,6 +914,89 @@ textarea.form-input {
         padding: 1.5rem;
         margin: 0;
     }
+ /* Modal Styles */
+ .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 10, 10, 0.95); /* Dark semi-transparent background */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--code-bg); /* Match the code block background */
+            border-radius: 8px;
+            padding: 2rem;
+            width: 400px;
+            max-width: 90%;
+            border: 1px solid rgba(100, 255, 218, 0.1); /* Accent border */
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.1); /* Glow effect */
+            position: relative;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: var(--accent);
+        }
+
+        .modal-content p {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content .terminal-text {
+            color: var(--accent);
+            font-family: 'Consolas', monospace;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content .terminal-text::before {
+            content: '$ ';
+            color: var(--accent);
+        }
+
+        /* Button Styles */
+        .modal-content button {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .modal-content button:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -1720,19 +1803,22 @@ textarea.form-input {
                 </div>
     
                 <div class="contact-card">
-                    <form class="contact-form">
+                    <form class="contact-form" 
+                        action="https://formspree.io/f/mjkgreak"
+                        method="POST"
+                      >
                         <div class="form-group">
-                            <input type="text" class="form-input" id="name" placeholder=" ">
+                            <input type="text" class="form-input" id="name" placeholder="" name="name">
                             <label for="name" class="form-label">Your Name</label>
                         </div>
     
                         <div class="form-group">
-                            <input type="email" class="form-input" id="email" placeholder=" ">
+                            <input type="email" class="form-input" id="email" placeholder="" name="email">
                             <label for="email" class="form-label">Your Email</label>
                         </div>
     
                         <div class="form-group">
-                            <textarea class="form-input" id="message" placeholder=" "></textarea>
+                            <textarea class="form-input" id="message" placeholder="" name="message"></textarea>
                             <label for="message" class="form-label">Your Message</label>
                         </div>
     
@@ -1745,7 +1831,47 @@ textarea.form-input {
         </div>
     </section>
 
+                    <!-- Success Modal -->
+                    <div id="successModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <p class="terminal-text">Message sent successfully!</p>
+                        </div>
+                    </div>
+
     <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".contact-form");
+    const successModal = document.getElementById("successModal");
+    const errorModal = document.getElementById("errorModal");
+    const closeButtons = document.querySelectorAll(".close");
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+            successModal.style.display = "flex"; // Show success modal
+            form.reset(); // Clear form fields
+    });
+
+    // Close modal when clicking the close button
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            successModal.style.display = "none";
+            errorModal.style.display = "none";
+        });
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener("click", function (event) {
+        if (event.target === successModal) {
+            successModal.style.display = "none";
+        }
+        if (event.target === errorModal) {
+            errorModal.style.display = "none";
+        }
+    });
+});
+
         // Matrix rain effect
         function createMatrixRain() {
             const matrixBg = document.querySelector('.matrix-bg');
